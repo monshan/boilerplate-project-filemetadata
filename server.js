@@ -1,16 +1,20 @@
 // ACCEPTANCE CRITERIA
 
-// You should provide your own project, not the example URL.
+// DONE You should provide your own project, not the example URL.
 
-// You can submit a form that includes a file upload. ( /api/fileanalyse )
+// DONE You can submit a form that includes a file upload. ( /api/fileanalyse )
 
-// The form file input field has the name attribute set to upfile.
+// DONE The form file input field has the name attribute set to upfile.
 
-// When you submit a file, you receive the file name, type, and size in bytes within the JSON response.
+// DONE When you submit a file, you receive the file name, type, and size in bytes within the JSON response.
 
 var express = require('express');
 var cors = require('cors');
+var multer = require('multer');
+
 require('dotenv').config();
+
+var upload = multer({ dest: 'uploads/' });
 
 var app = express();
 
@@ -26,8 +30,13 @@ app.get('/', function (req, res) {
     res.sendFile(process.cwd() + '/views/index.html');
 });
 
-app.post('/api/fileanalyse', (req, res) => {
-  res.json(req.body)
+app.post('/api/fileanalyse', upload.single('upfile'), (req, res) => {
+  let file = req.file;
+  res.send({
+    "name": file.originalname,
+    "type": file.mimetype,
+    "size": file.size
+  })
 })
 
 
